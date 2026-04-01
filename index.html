@@ -8,6 +8,15 @@
     <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,viewport-fit=cover,user-scalable=no">
     <script>
         // Override to use our fixed worker bundle
+        const ogWorker = window.Worker;
+        window.Worker = function(scriptUrl, options) {
+            if (scriptUrl === "simulation_worker.bundle.js") {
+                return new ogWorker("https://cdn.jsdelivr.net/gh/Teninmata/Teninmata.github.io/simulation_worker.bundle.js", options);
+            }
+            return new ogWorker(scriptUrl, options);
+        };
+        window.Worker.prototype = ogWorker.prototype;
+
         const ogfetch = window.fetch;
         window.fetch = async function (input, init) {
             if (typeof input === "string" && input.includes("simulation_worker.bundle.js")) {
