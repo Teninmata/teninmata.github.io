@@ -2,20 +2,10 @@
 <html>
 
 <head>
-    <base href="https://cdn.jsdelivr.net/gh/PolytrackModded/Polytrackmodded.github.io/">
+    <base href="https://cdn.jsdelivr.net/gh/Teninmata/Teninmata.github.io/">
     <meta charset="utf-8">
     <link rel="manifest" href="manifest.json" />
     <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,viewport-fit=cover,user-scalable=no">
-    <script>
-        // Override to use our fixed worker bundle
-        const ogfetch = window.fetch;
-        window.fetch = async function (input, init) {
-            if (typeof input === "string" && input.includes("simulation_worker.bundle.js")) {
-                input = "https://cdn.jsdelivr.net/gh/Teninmata/Teninmata.github.io/simulation_worker.bundle.js";
-            }
-            return ogfetch(input, init);
-        };
-    </script>
     <script defer="defer" src="main.bundle.js"></script>
 </head>
 
