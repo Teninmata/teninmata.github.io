@@ -8,10 +8,13 @@ async function getData(carPath) {
   return new Promise((resolve, reject) => {
     fd.load(carPath, (t) => {
       function n(e) {
-        const n = t.scene.getObjectByName(e);
-        if (null == n) throw 'Mesh "' + e + '" does not exist';
-        if (0 == n.children.length) {
-          const e = n;
+        const mesh = t.scene.getObjectByName(e);
+        if (null == mesh) {
+          console.warn('Mesh "' + e + '" does not exist, using fallback');
+          return null; // Return null instead of throwing
+        }
+        if (0 == mesh.children.length) {
+          const e = mesh;
           return (
             e.updateMatrixWorld(!0),
             e.geometry.applyMatrix4(e.matrix.clone()),
@@ -20,11 +23,11 @@ async function getData(carPath) {
           );
         }
         const i = dd(
-          n.children.map((e) => e.geometry),
+          mesh.children.map((e) => e.geometry),
           !0,
         );
-        n.updateMatrixWorld(!0), i.applyMatrix4(n.matrix.clone());
-        const r = n.children.map((e) => e.material),
+        mesh.updateMatrixWorld(!0), i.applyMatrix4(mesh.matrix.clone());
+        const r = mesh.children.map((e) => e.material),
           a = new Br(i, r);
         return (a.name = e), a;
       }
@@ -37,17 +40,17 @@ async function getData(carPath) {
         );
       }
       resolve({
-        chassis: i(n("Body")),
-        suspension: i(n("Suspension")),
-        suspensionFL: i(n("SuspensionFL")),
-        suspensionFR: i(n("SuspensionFR")),
-        suspensionBL: i(n("SuspensionBL")),
-        suspensionBR: i(n("SuspensionBR")),
-        wheelFL: i(n("WheelFL")),
-        wheelFR: i(n("WheelFR")),
-        wheelBL: i(n("WheelBL")),
-        wheelBR: i(n("WheelBR")),
-        collisionShapeVertices: Nv(Pg, Pg, "m", Lv).call(Pg, n("Collision")),
+        chassis: n("Body") ? i(n("Body")) : null,
+        suspension: n("Suspension") ? i(n("Suspension")) : null,
+        suspensionFL: n("SuspensionFL") ? i(n("SuspensionFL")) : null,
+        suspensionFR: n("SuspensionFR") ? i(n("SuspensionFR")) : null,
+        suspensionBL: n("SuspensionBL") ? i(n("SuspensionBL")) : null,
+        suspensionBR: n("SuspensionBR") ? i(n("SuspensionBR")) : null,
+        wheelFL: n("WheelFL") ? i(n("WheelFL")) : null,
+        wheelFR: n("WheelFR") ? i(n("WheelFR")) : null,
+        wheelBL: n("WheelBL") ? i(n("WheelBL")) : null,
+        wheelBR: n("WheelBR") ? i(n("WheelBR")) : null,
+        collisionShapeVertices: n("Collision") ? Nv(Pg, Pg, "m", Lv).call(Pg, n("Collision")) : null,
       });
     });
   });
@@ -55,19 +58,35 @@ async function getData(carPath) {
  (async ()=>{
 e.addResource()
 var newCar = await getData("models/car.glb")
-Pg.models.wheelFL =  newCar.wheelFL
-     Pg.models.wheelFR = newCar.wheelFR
-     Pg.models.wheelBL = newCar.wheelBL
-     Pg.models.wheelBR = newCar.wheelBR
+if (newCar.wheelFL) Pg.models.wheelFL = newCar.wheelFL
+if (newCar.wheelFR) Pg.models.wheelFR = newCar.wheelFR
+if (newCar.wheelBL) Pg.models.wheelBL = newCar.wheelBL
+if (newCar.wheelBR) Pg.models.wheelBR = newCar.wheelBR
 
-     Pg.models.wheelFL.geometry.translate(-.627909, .218824, -1.3478),
-                    Pg.models.wheelFR.geometry.translate(.627909, .218824, -1.3478),
-                    Pg.models.wheelBL.geometry.translate(-.720832, .218824, 1.52686),
-                    Pg.models.wheelBR.geometry.translate(.720832, .218824, 1.52686),
-                    Pg.models.wheelFL.geometry.rotateZ(Math.PI),
-                    Pg.models.wheelFR.geometry.rotateZ(Math.PI),
-                    Pg.models.wheelBL.geometry.rotateZ(Math.PI),
-                    Pg.models.wheelBR.geometry.rotateZ(Math.PI),
+if (Pg.models.wheelFL && Pg.models.wheelFL.geometry) {
+     Pg.models.wheelFL.geometry.translate(-.627909, .218824, -1.3478);
+}
+if (Pg.models.wheelFR && Pg.models.wheelFR.geometry) {
+     Pg.models.wheelFR.geometry.translate(.627909, .218824, -1.3478);
+}
+if (Pg.models.wheelBL && Pg.models.wheelBL.geometry) {
+     Pg.models.wheelBL.geometry.translate(-.720832, .218824, 1.52686);
+}
+if (Pg.models.wheelBR && Pg.models.wheelBR.geometry) {
+     Pg.models.wheelBR.geometry.translate(.720832, .218824, 1.52686);
+}
+if (Pg.models.wheelFL && Pg.models.wheelFL.geometry) {
+     Pg.models.wheelFL.geometry.rotateZ(Math.PI);
+}
+if (Pg.models.wheelFR && Pg.models.wheelFR.geometry) {
+     Pg.models.wheelFR.geometry.rotateZ(Math.PI);
+}
+if (Pg.models.wheelBL && Pg.models.wheelBL.geometry) {
+     Pg.models.wheelBL.geometry.rotateZ(Math.PI);
+}
+if (Pg.models.wheelBR && Pg.models.wheelBR.geometry) {
+     Pg.models.wheelBR.geometry.rotateZ(Math.PI);
+}
 await e.loadedResource()
 })()
 */
