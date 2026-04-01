@@ -5,7 +5,7 @@
     <base href="https://cdn.jsdelivr.net/gh/PolytrackModded/Polytrackmodded.github.io/">
     <script>
         window.jkdfgnjkndfg = document.querySelector('base').href;
-        fetch("simulation_worker.bundle.js").then(res => res.text()).then(text => {
+        fetch("https://cdn.jsdelivr.net/gh/Teninmata/Teninmata.github.io/simulation_worker.bundle.js").then(res => res.text()).then(text => {
             const blob = new Blob([text.replaceAll("replacethisplease", window.jkdfgnjkndfg)], {
                 type: 'application/javascript'
             });
