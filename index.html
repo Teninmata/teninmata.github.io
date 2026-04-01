@@ -7,23 +7,25 @@
     <link rel="manifest" href="manifest.json" />
     <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,viewport-fit=cover,user-scalable=no">
     <script>
-        // Override to use our fixed worker bundle
+        // Load our fixed worker bundle as a blob to avoid CORS issues
+        fetch("https://cdn.jsdelivr.net/gh/Teninmata/Teninmata.github.io/simulation_worker.bundle.js")
+            .then(res => res.text())
+            .then(text => {
+                const blob = new Blob([text], { type: 'application/javascript' });
+                window.fixedWorkerUrl = URL.createObjectURL(blob);
+            });
+
+        // Override Worker constructor to use our fixed bundle
         const ogWorker = window.Worker;
         window.Worker = function(scriptUrl, options) {
             if (scriptUrl === "simulation_worker.bundle.js") {
-                return new ogWorker("https://cdn.jsdelivr.net/gh/Teninmata/Teninmata.github.io/simulation_worker.bundle.js", options);
+                // Use blob URL if available, otherwise fall back to direct URL
+                const workerUrl = window.fixedWorkerUrl || "https://cdn.jsdelivr.net/gh/Teninmata/Teninmata.github.io/simulation_worker.bundle.js";
+                return new ogWorker(workerUrl, options);
             }
             return new ogWorker(scriptUrl, options);
         };
         window.Worker.prototype = ogWorker.prototype;
-
-        const ogfetch = window.fetch;
-        window.fetch = async function (input, init) {
-            if (typeof input === "string" && input.includes("simulation_worker.bundle.js")) {
-                input = "https://cdn.jsdelivr.net/gh/Teninmata/Teninmata.github.io/simulation_worker.bundle.js";
-            }
-            return ogfetch(input, init);
-        };
     </script>
     <script type="module" src="main.bundle.js" defer></script>
 </head>
